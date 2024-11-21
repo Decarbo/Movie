@@ -1,165 +1,76 @@
-const searchbtn = document.querySelector('.searchbtn');
-const entertext = document.querySelector('.entertext');
-const movieposter = document.querySelector('.movieposter');
-
-const getMovieInfo = async (movieTitle) => {
-	try {
-		const myAPIkey = 'e69e0e0';
-		const url = `https://www.omdbapi.com/?apikey=${myAPIkey}&t=${encodeURIComponent(movieTitle)}`;
-
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
-		const data = await response.json();
-		console.log(data);
-		// Check if the movie was found
-		if (data.Response === 'False') {
-			movieposter.innerHTML = `<p>Error: ${data.Error}</p>`; // Display error message
-			return; // Exit the function if the movie is not found
-		}
-
-		moviedata(data);
-	} catch (error) {
-		Showerror("No movie Found! Bro");
-	}
-};
-
-const moviedata = (data) => {
-	const { Released, Runtime, Title, imdbRating, Poster, Plot, Language, Director, Country, Awards, Genre } = data;
-	const Moviepage = document.createElement('div');
-	Moviepage.className = 'nn';
-	Moviepage.innerHTML = `
-
-	<div class="posterimg">
-					<img
-						src="${Poster}"
-						alt=""
-					/>
-
-				<strong><h2>${Title}</h2></strong>
-				</div>
-				<div class="postertext">
-				<div class="head">
-
-
-				</div>
-
-
-					<p>Released : ${Released}</p>
-					<p>IMDb Rating : ⭐${imdbRating}</p>
-					<p>Runtime : ${Runtime}</p>
-					<p>Language : ${Language}</p>
-					<p>Director : ${Director}</p>
-					<p>Country : ${Country}</p>
-					<p>Awards : ${Awards}</p>
-					<p>Plot : ${Plot}</p>
-				</div>
-    `;
-
-	const Moviegenere = document.createElement('div');
-	Moviegenere.className = 'genere';
-	Genre.split(', ').forEach((e) => {
-		const spann = document.createElement('span');
-		spann.innerHTML = e;
-		Moviegenere.appendChild(spann);
-	});
-	Moviepage.appendChild(Moviegenere);
-	movieposter.innerHTML = ''; // Clear previous results
-	movieposter.appendChild(Moviepage);
-};
-const Showerror = (message) => {
-	movieposter.innerHTML = `<p>${message}</p>`;
-};
-searchbtn.addEventListener('click', (e) => {
-	e.preventDefault();
-	const searchedname = entertext.value.trim();
-	if (searchedname !== '') {
-		getMovieInfo(searchedname);
-	} else {
-		// Prompt user to enter a title
-		Showerror('Please enter a movie title.');
-	}
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
 });
 
+// Form submission handling
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const formData = new FormData(this);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const message = formData.get('message');
+    
+    // Here you would typically send the form data to a server
+    console.log('Form submitted:', { name, email, message });
+    
+    // Reset form
+    this.reset();
+    alert('Thank you for your message! I will get back to you soon.');
+});
 
+// Add scroll animation for elements
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.75) {
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+        }
+    });
+});
 
+// Initialize sections with initial state
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    });
+});
 
+// Add this hamburger menu code to your existing JavaScript
+const hamburger = document.querySelector(".hamburger");
+const navLinks = document.querySelector(".nav-links");
+const navLinksItems = document.querySelectorAll(".nav-links li");
 
+// Toggle menu
+hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    navLinks.classList.toggle("active");
+});
 
-// const moviedata = (data) => {
-// 	const { Released, Runtime, Title, imdbRating, Poster, Plot, Language, Director, Country, Awards, Genre } = data;
-// 	const Moviepage = document.createElement('div');
-// 	Moviepage.className = 'nn shimmer'; // Added shimmer class
-// 	Moviepage.innerHTML = `
-// 	<div class="posterimg">
-// 		<img
-// 			src="${Poster}"
-// 			alt=""
-// 		/>
-// 		<strong><h2>${Title}</h2></strong>
-// 	</div>
-// 	<div class="postertext">
-// 		<div class="head">
-// 		</div>
-// 		<p>Released : ${Released}</p>
-// 		<p>IMDb Rating : ⭐${imdbRating}</p>
-// 		<p>Runtime : ${Runtime}</p>
-// 		<p>Language : ${Language}</p>
-// 		<p>Director : ${Director}</p>
-// 		<p>Country : ${Country}</p>
-// 		<p>Awards : ${Awards}</p>
-// 		<p>Plot : ${Plot}</p>
-// 	</div>
-//     `;
+// Close menu when clicking a link
+navLinksItems.forEach(link => {
+    link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+    });
+});
 
-// 	// Add CSS for shimmer effect
-// 	const style = document.createElement('style');
-// 	style.textContent = `
-// 	.shimmer {
-// 		position: relative;
-// 		overflow: hidden;
-// 	}
-// 	.shimmer::before {
-// 		content: '';
-// 		position: absolute;
-// 		top: 0;
-// 		left: -100%;
-// 		width: 100%;
-// 		height: 100%;
-// 		background: linear-gradient(
-// 			90deg,
-// 			rgba(255,255,255,0) 0%,
-// 			rgba(255,255,255,0.2) 50%,
-// 			rgba(255,255,255,0) 100%
-// 		);
-// 		animation: shimmerEffect 1.5s infinite;
-// 	}
-// 	@keyframes shimmerEffect {
-// 		0% {
-// 			left: -100%;
-// 		}
-// 		100% {
-// 			left: 100%;
-// 		}
-// 	}
-// 	`;
-// 	document.head.appendChild(style);
-
-// 	const Moviegenere = document.createElement('div');
-// 	Moviegenere.className = 'genere';
-// 	Genre.split(', ').forEach((e) => {
-// 		const spann = document.createElement('span');
-// 		spann.innerHTML = e;
-// 		Moviegenere.appendChild(spann);
-// 	});
-// 	Moviepage.appendChild(Moviegenere);
-
-// 	// Remove shimmer class after content is loaded
-// 	setTimeout(() => {
-// 		Moviepage.classList.remove('shimmer');
-// 	}, 1500);
-
-// 	movieposter.innerHTML = ''; // Clear previous results
-// 	movieposter.appendChild(Moviepage);
-// };
+// Close menu when clicking outside
+document.addEventListener("click", (e) => {
+    if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+    }
+});
